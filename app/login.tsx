@@ -1,21 +1,33 @@
-import { Ionicons } from "@expo/vector-icons"; // Library icon bawaan Expo
+import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
-    Image,
-    KeyboardAvoidingView,
-    Platform,
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 const SignInScreen = () => {
   const router = useRouter();
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  // --- LOGIKA VALIDASI ---
+  const isGmail =
+    email.length > 0 && email.toLowerCase().endsWith("@gmail.com");
+  const hasUppercase = /[A-Z]/.test(password);
+  const hasNumber = /[0-9]/.test(password);
+  const isPasswordValid = password.length >= 8 && hasUppercase && hasNumber;
+
+  // Satpam Tombol
+  const canSubmit = isGmail && isPasswordValid;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -24,7 +36,7 @@ const SignInScreen = () => {
         style={{ flex: 1 }}
       >
         <View style={styles.content}>
-          {/* Logo */}
+          {/* Logo Section */}
           <View style={styles.logoCircle}>
             <Image
               source={require("../assets/images/Saraya.png")}
@@ -36,34 +48,59 @@ const SignInScreen = () => {
           <Text style={styles.title}>Sign In</Text>
           <Text style={styles.subtitle}>Masuk ke akun Anda</Text>
 
-          {/* Form Input */}
-          <View style={styles.inputContainer}>
+          {/* Email Input Section */}
+          <View style={styles.inputWrapper}>
             <TextInput
               placeholder="Email"
-              style={styles.input}
+              style={[
+                styles.input,
+                email.length > 0 && !isGmail && styles.inputError,
+              ]}
               keyboardType="email-address"
               autoCapitalize="none"
+              value={email}
+              onChangeText={setEmail}
             />
+            {email.length > 0 && !isGmail && (
+              <Text style={styles.errorHint}>
+                * Harus menggunakan @gmail.com
+              </Text>
+            )}
           </View>
 
-          <View style={styles.passwordWrapper}>
-            <TextInput
-              placeholder="Password"
-              style={[styles.inputpass, { flex: 1, marginBottom: 0 }]}
-              secureTextEntry={!passwordVisible}
-            />
-            <TouchableOpacity
-              onPress={() => setPasswordVisible(!passwordVisible)}
-              style={styles.eyeIcon}
+          {/* Password Input Section */}
+          <View style={styles.inputWrapper}>
+            <View
+              style={[
+                styles.passwordWrapper,
+                password.length > 0 && !isPasswordValid && styles.inputError,
+              ]}
             >
-              <Ionicons
-                name={passwordVisible ? "eye-outline" : "eye-off-outline"}
-                size={20}
-                color="#C4C4C4"
+              <TextInput
+                placeholder="Password"
+                style={styles.inputpass}
+                secureTextEntry={!passwordVisible}
+                value={password}
+                onChangeText={setPassword}
               />
-            </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setPasswordVisible(!passwordVisible)}
+                style={styles.eyeIcon}
+              >
+                <Ionicons
+                  name={passwordVisible ? "eye-outline" : "eye-off-outline"}
+                  size={20}
+                  color="#C4C4C4"
+                />
+              </TouchableOpacity>
+            </View>
+            {password.length > 0 && !isPasswordValid && (
+              <Text style={styles.errorHint}>
+                * Min. 8 karakter, ada huruf kapital & angka
+              </Text>
+            )}
           </View>
-          {/* Remember Me & Forgot Password */}
+
           <View style={styles.rowJustify}>
             <TouchableOpacity style={styles.checkboxRow}>
               <View style={styles.checkbox} />
@@ -74,15 +111,19 @@ const SignInScreen = () => {
             </TouchableOpacity>
           </View>
 
-          {/* Login Button */}
+          {/* Main Login Button */}
           <TouchableOpacity
-            style={styles.mainButton}
-            onPress={() => router.replace("/(tabs)")}
+            style={[
+              styles.mainButton,
+              { backgroundColor: canSubmit ? "#C12026" : "#E0E0E0" },
+            ]}
+            onPress={() => canSubmit && router.replace("/(tabs)")}
+            disabled={!canSubmit}
           >
             <Text style={styles.mainButtonText}>Masuk</Text>
           </TouchableOpacity>
 
-          <Text style={[styles.grayText, { marginVertical: 20 }]}>atau</Text>
+          <Text style={styles.dividerText}>atau</Text>
 
           {/* Social Buttons */}
           <TouchableOpacity style={styles.socialButton}>
@@ -106,12 +147,7 @@ const SignInScreen = () => {
           </TouchableOpacity>
 
           {/* Footer */}
-          <View
-            style={[
-              styles.rowJustify,
-              { justifyContent: "center", marginTop: 30 },
-            ]}
-          >
+          <View style={styles.footer}>
             <Text style={styles.grayText}>Belum punya akun? </Text>
             <TouchableOpacity onPress={() => router.push("/register")}>
               <Text style={styles.blueTextBold}>Daftar</Text>
@@ -129,7 +165,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     paddingHorizontal: 30,
-    paddingTop: 50,
+    paddingTop: 40,
   },
   logoCircle: {
     width: 80,
@@ -139,13 +175,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 20,
-    elevation: 5,
-    shadowOpacity: 0.2,
+    elevation: 4,
+    shadowOpacity: 0.15,
   },
-  logoImage: { width: 50, height: 50, tintColor: "#FFF" },
-  title: { fontSize: 32, fontWeight: "500", color: "#555", marginBottom: 10 },
-  subtitle: { fontSize: 16, color: "#888", marginBottom: 30 },
-  inputContainer: { width: "100%" },
+  logoImage: { width: 45, height: 45, tintColor: "#FFF" },
+  title: { fontSize: 28, fontWeight: "bold", color: "#333", marginBottom: 8 },
+  subtitle: { fontSize: 14, color: "#888", marginBottom: 25 },
+  inputWrapper: { width: "100%", marginBottom: 15 },
   input: {
     width: "100%",
     height: 50,
@@ -153,32 +189,25 @@ const styles = StyleSheet.create({
     borderColor: "#DDD",
     borderRadius: 12,
     paddingHorizontal: 15,
-    marginBottom: 15,
-    backgroundColor: "#FFF",
+    backgroundColor: "#F9F9F9",
   },
-  inputpass: {
-    width: "100%",
-    height: 50,
-    borderColor: "#DDD",
-    borderRadius: 12,
-    paddingHorizontal: 15,
-    marginBottom: 15,
-    backgroundColor: "#FFF",
-  },
+  inputError: { borderColor: "#FF4D4D" },
+  errorHint: { color: "#FF4D4D", fontSize: 11, marginTop: 5, marginLeft: 5 },
   passwordWrapper: {
     flexDirection: "row",
     alignItems: "center",
     borderWidth: 1,
     borderColor: "#DDD",
     borderRadius: 12,
-    marginBottom: 15,
+    backgroundColor: "#F9F9F9",
   },
+  inputpass: { flex: 1, height: 50, paddingHorizontal: 15 },
   eyeIcon: { paddingRight: 15 },
   rowJustify: {
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
-    marginBottom: 30,
+    marginBottom: 25,
   },
   checkboxRow: { flexDirection: "row", alignItems: "center" },
   checkbox: {
@@ -189,30 +218,34 @@ const styles = StyleSheet.create({
     marginRight: 8,
     borderRadius: 4,
   },
-  grayText: { color: "#888", fontSize: 14 },
-  blueTextBold: { color: "#2E5AAC", fontWeight: "bold", fontSize: 14 },
+  grayText: { color: "#888", fontSize: 13 },
+  blueTextBold: { color: "#2E5AAC", fontWeight: "bold", fontSize: 13 },
   mainButton: {
-    backgroundColor: "#C12026",
     width: "100%",
     paddingVertical: 15,
     borderRadius: 25,
     alignItems: "center",
-    elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    elevation: 2,
   },
   mainButtonText: { color: "#FFF", fontSize: 16, fontWeight: "bold" },
+  dividerText: { color: "#BBB", marginVertical: 15, fontSize: 12 },
   socialButton: {
     flexDirection: "row",
     width: "100%",
     height: 50,
     borderWidth: 1,
-    borderColor: "#DDD",
+    borderColor: "#EEE",
     borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 15,
+    marginBottom: 12,
   },
-  socialIcon: { width: 24, height: 24, marginRight: 10 },
-  socialText: { color: "#666", fontSize: 14, fontWeight: "500" },
+  socialIcon: { width: 22, height: 22, marginRight: 10 },
+  socialText: { color: "#555", fontSize: 14, fontWeight: "500" },
+  footer: { flexDirection: "row", marginTop: 20, marginBottom: 20 },
 });
 
 export default SignInScreen;

@@ -1,21 +1,39 @@
-import { Ionicons } from "@expo/vector-icons"; // Library icon bawaan Expo
+import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
-    Image,
-    KeyboardAvoidingView,
-    Platform,
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
-const SignInScreen = () => {
+const SignUpScreen = () => {
   const router = useRouter();
   const [passwordVisible, setPasswordVisible] = useState(false);
+
+  // State Input
+  const [nama, setNama] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  // --- LOGIKA VALIDASI ---
+  const isGmail =
+    email.length > 0 && email.toLowerCase().endsWith("@gmail.com");
+  const hasUppercase = /[A-Z]/.test(password);
+  const hasNumber = /[0-9]/.test(password);
+  const isPasswordValid = password.length >= 8 && hasUppercase && hasNumber;
+  const isFormFilled = nama.trim().length > 0 && username.trim().length > 0;
+
+  // Tombol aktif jika semua syarat beres
+  const canSubmit = isGmail && isPasswordValid && isFormFilled;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -23,103 +41,142 @@ const SignInScreen = () => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
       >
-        <View style={styles.content}>
-          {/* Logo */}
-          <View style={styles.logoCircle}>
-            <Image
-              source={require("../assets/images/Saraya.png")}
-              style={styles.logoImage}
-              resizeMode="contain"
-            />
-          </View>
-
-          <Text style={styles.title}>Sign Up</Text>
-          <Text style={styles.subtitle}>Daftar akun anda</Text>
-
-          {/* Form Input */}
-          <View style={styles.inputContainer}>
-            <TextInput
-              placeholder="Nama"
-              style={styles.input}
-              keyboardType="default"
-              autoCapitalize="words"
-            />
-          </View>
-
-          <View style={styles.inputContainer}>
-            <TextInput
-              placeholder="Username"
-              style={styles.input}
-              keyboardType="default"
-              autoCapitalize="none"
-            />
-          </View>
-
-          <View style={styles.inputContainer}>
-            <TextInput
-              placeholder="Email"
-              style={styles.input}
-              keyboardType="email-address"
-              autoCapitalize="none"
-            />
-          </View>
-
-          <View style={styles.passwordWrapper}>
-            <TextInput
-              placeholder="Password"
-              style={[styles.inputpass, { flex: 1, marginBottom: 0 }]}
-              secureTextEntry={!passwordVisible}
-            />
-            <TouchableOpacity
-              onPress={() => setPasswordVisible(!passwordVisible)}
-              style={styles.eyeIcon}
-            >
-              <Ionicons
-                name={passwordVisible ? "eye-outline" : "eye-off-outline"}
-                size={20}
-                color="#C4C4C4"
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+        >
+          <View style={styles.content}>
+            {/* Logo Section */}
+            <View style={styles.logoCircle}>
+              <Image
+                source={require("../assets/images/Saraya.png")}
+                style={styles.logoImage}
+                resizeMode="contain"
               />
-            </TouchableOpacity>
-          </View>
-          {/* Remember Me & Forgot Password */}
-          <View style={styles.rowJustify}>
-            <TouchableOpacity style={styles.checkboxRow}>
-              <View style={styles.checkbox} />
-              <Text style={styles.grayText}>Ingat saya</Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Text style={styles.blueTextBold}>Lupa password?</Text>
-            </TouchableOpacity>
-          </View>
+            </View>
 
-          {/* Login Button */}
-          <TouchableOpacity
-            style={styles.mainButton}
-            onPress={() => router.replace("/(tabs)")}
-          >
-            <Text style={styles.mainButtonText}>Masuk</Text>
-          </TouchableOpacity>
+            <Text style={styles.title}>Sign Up</Text>
+            <Text style={styles.subtitle}>Daftar akun anda</Text>
 
-          <Text style={[styles.grayText, { marginVertical: 20 }]}>atau</Text>
+            {/* Input Nama */}
+            <View style={styles.inputWrapper}>
+              <TextInput
+                placeholder="Nama Lengkap"
+                style={styles.input}
+                value={nama}
+                onChangeText={setNama}
+                autoCapitalize="words"
+              />
+            </View>
 
-          {/* Social Buttons */}
-          <TouchableOpacity style={styles.socialButton}>
-            <Image
-              source={{
-                uri: "https://img.icons8.com/color/48/000000/google-logo.png",
-              }}
-              style={styles.socialIcon}
-            />
-            <Text style={styles.socialText}>Masuk dengan Google</Text>
-          </TouchableOpacity>
-          {/* Footer */}
-          <View style={[styles.rowJustify, { justifyContent: "center" }]}>
-            <Text style={styles.grayText}>Sudah punya akun? </Text>
-            <TouchableOpacity onPress={() => router.replace("/login")}>
-              <Text style={styles.blueTextBold}>Masuk</Text>
+            {/* Input Username */}
+            <View style={styles.inputWrapper}>
+              <TextInput
+                placeholder="Username"
+                style={styles.input}
+                value={username}
+                onChangeText={setUsername}
+                autoCapitalize="none"
+              />
+            </View>
+
+            {/* Input Email Section */}
+            <View style={styles.inputWrapper}>
+              <TextInput
+                placeholder="Email"
+                style={[
+                  styles.input,
+                  email.length > 0 && !isGmail && styles.inputError,
+                ]}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                value={email}
+                onChangeText={setEmail}
+              />
+              {email.length > 0 && !isGmail && (
+                <Text style={styles.errorHint}>
+                  * Harus menggunakan @gmail.com
+                </Text>
+              )}
+            </View>
+
+            {/* Input Password Section */}
+            <View style={styles.inputWrapper}>
+              <View
+                style={[
+                  styles.passwordWrapper,
+                  password.length > 0 && !isPasswordValid && styles.inputError,
+                ]}
+              >
+                <TextInput
+                  placeholder="Password"
+                  style={styles.inputpass}
+                  secureTextEntry={!passwordVisible}
+                  value={password}
+                  onChangeText={setPassword}
+                />
+                <TouchableOpacity
+                  onPress={() => setPasswordVisible(!passwordVisible)}
+                  style={styles.eyeIcon}
+                >
+                  <Ionicons
+                    name={passwordVisible ? "eye-outline" : "eye-off-outline"}
+                    size={20}
+                    color="#C4C4C4"
+                  />
+                </TouchableOpacity>
+              </View>
+              {password.length > 0 && !isPasswordValid && (
+                <Text style={styles.errorHint}>
+                  * Min. 8 karakter, ada huruf kapital & angka
+                </Text>
+              )}
+            </View>
+
+            {/* Register Button */}
+            <TouchableOpacity
+              style={[
+                styles.mainButton,
+                { backgroundColor: canSubmit ? "#C12026" : "#E0E0E0" },
+              ]}
+              onPress={() => canSubmit && router.replace("/(tabs)")}
+              disabled={!canSubmit}
+            >
+              <Text style={styles.mainButtonText}>Daftar</Text>
             </TouchableOpacity>
+
+            <Text style={styles.dividerText}>atau</Text>
+
+            {/* Social Buttons */}
+            <TouchableOpacity style={styles.socialButton}>
+              <Image
+                source={{
+                  uri: "https://img.icons8.com/color/48/000000/google-logo.png",
+                }}
+                style={styles.socialIcon}
+              />
+              <Text style={styles.socialText}>Daftar dengan Google</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.socialButton}>
+              <Image
+                source={{
+                  uri: "https://img.icons8.com/color/48/000000/facebook-new.png",
+                }}
+                style={styles.socialIcon}
+              />
+              <Text style={styles.socialText}>Daftar dengan Facebook</Text>
+            </TouchableOpacity>
+
+            {/* Footer */}
+            <View style={styles.footer}>
+              <Text style={styles.grayText}>Sudah punya akun? </Text>
+              <TouchableOpacity onPress={() => router.replace("/login")}>
+                <Text style={styles.blueTextBold}>Masuk</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
+        </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -127,11 +184,13 @@ const SignInScreen = () => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#FFF" },
+  scrollContent: { flexGrow: 1 },
   content: {
     flex: 1,
     alignItems: "center",
     paddingHorizontal: 30,
-    paddingTop: 50,
+    paddingTop: 40,
+    paddingBottom: 20,
   },
   logoCircle: {
     width: 80,
@@ -141,13 +200,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 20,
-    elevation: 5,
-    shadowOpacity: 0.2,
+    elevation: 4,
+    shadowOpacity: 0.15,
   },
-  logoImage: { width: 50, height: 50, tintColor: "#FFF" },
-  title: { fontSize: 32, fontWeight: "500", color: "#555", marginBottom: 10 },
-  subtitle: { fontSize: 16, color: "#888", marginBottom: 30 },
-  inputContainer: { width: "100%" },
+  logoImage: { width: 45, height: 45, tintColor: "#FFF" },
+  title: { fontSize: 28, fontWeight: "bold", color: "#333", marginBottom: 8 },
+  subtitle: { fontSize: 14, color: "#888", marginBottom: 25 },
+  inputWrapper: { width: "100%", marginBottom: 15 },
   input: {
     width: "100%",
     height: 50,
@@ -155,66 +214,48 @@ const styles = StyleSheet.create({
     borderColor: "#DDD",
     borderRadius: 12,
     paddingHorizontal: 15,
-    marginBottom: 15,
-    backgroundColor: "#FFF",
+    backgroundColor: "#F9F9F9",
   },
-  inputpass: {
-    width: "100%",
-    height: 50,
-    borderColor: "#DDD",
-    borderRadius: 12,
-    paddingHorizontal: 15,
-    marginBottom: 15,
-    backgroundColor: "#FFF",
-  },
+  inputError: { borderColor: "#FF4D4D" },
+  errorHint: { color: "#FF4D4D", fontSize: 11, marginTop: 5, marginLeft: 5 },
   passwordWrapper: {
     flexDirection: "row",
     alignItems: "center",
     borderWidth: 1,
     borderColor: "#DDD",
     borderRadius: 12,
-    marginBottom: 15,
+    backgroundColor: "#F9F9F9",
   },
+  inputpass: { flex: 1, height: 50, paddingHorizontal: 15 },
   eyeIcon: { paddingRight: 15 },
-  rowJustify: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
-    marginBottom: 30,
-  },
-  checkboxRow: { flexDirection: "row", alignItems: "center" },
-  checkbox: {
-    width: 18,
-    height: 18,
-    borderWidth: 1,
-    borderColor: "#DDD",
-    marginRight: 8,
-    borderRadius: 4,
-  },
-  grayText: { color: "#888", fontSize: 14 },
-  blueTextBold: { color: "#2E5AAC", fontWeight: "bold", fontSize: 14 },
   mainButton: {
-    backgroundColor: "#C12026",
     width: "100%",
     paddingVertical: 15,
     borderRadius: 25,
     alignItems: "center",
-    elevation: 3,
+    marginTop: 10,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    elevation: 2,
   },
   mainButtonText: { color: "#FFF", fontSize: 16, fontWeight: "bold" },
+  dividerText: { color: "#BBB", marginVertical: 15, fontSize: 12 },
   socialButton: {
     flexDirection: "row",
     width: "100%",
     height: 50,
     borderWidth: 1,
-    borderColor: "#DDD",
+    borderColor: "#EEE",
     borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 15,
+    marginBottom: 12,
   },
-  socialIcon: { width: 24, height: 24, marginRight: 10 },
-  socialText: { color: "#666", fontSize: 14, fontWeight: "500" },
+  socialIcon: { width: 22, height: 22, marginRight: 10 },
+  socialText: { color: "#555", fontSize: 14, fontWeight: "500" },
+  footer: { flexDirection: "row", marginTop: 20 },
+  grayText: { color: "#888", fontSize: 13 },
+  blueTextBold: { color: "#2E5AAC", fontWeight: "bold", fontSize: 13 },
 });
 
-export default SignInScreen;
+export default SignUpScreen;
