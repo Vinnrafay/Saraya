@@ -117,7 +117,7 @@ const SignInScreen = () => {
               styles.mainButton,
               { backgroundColor: canSubmit ? "#C12026" : "#E0E0E0" },
             ]}
-            onPress={() => canSubmit && router.replace("/(tabs)")}
+            onPress={() => router.push("/welcome")}
             disabled={!canSubmit}
           >
             <Text style={styles.mainButtonText}>Masuk</Text>

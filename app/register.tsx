@@ -139,7 +139,7 @@ const SignUpScreen = () => {
                 styles.mainButton,
                 { backgroundColor: canSubmit ? "#C12026" : "#E0E0E0" },
               ]}
-              onPress={() => canSubmit && router.replace("/(tabs)")}
+              onPress={() => router.push("/welcome")}
               disabled={!canSubmit}
             >
               <Text style={styles.mainButtonText}>Daftar</Text>
@@ -156,16 +156,6 @@ const SignUpScreen = () => {
                 style={styles.socialIcon}
               />
               <Text style={styles.socialText}>Daftar dengan Google</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.socialButton}>
-              <Image
-                source={{
-                  uri: "https://img.icons8.com/color/48/000000/facebook-new.png",
-                }}
-                style={styles.socialIcon}
-              />
-              <Text style={styles.socialText}>Daftar dengan Facebook</Text>
             </TouchableOpacity>
 
             {/* Footer */}
