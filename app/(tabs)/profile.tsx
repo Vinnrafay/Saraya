@@ -1,34 +1,28 @@
-import React from 'react';
+import { BookOpen, ChevronRight, Target, Zap } from "lucide-react-native";
+import React from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
+  Dimensions,
+  Image,
   SafeAreaView,
   ScrollView,
-  Image,
+  StyleSheet,
+  Text,
   TouchableOpacity,
-  Dimensions,
-} from 'react-native';
-import { 
-  ChevronRight, 
-  BookOpen, 
-  Zap, 
-  Target 
-} from 'lucide-react-native';
+  View,
+} from "react-native";
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 export default function Profile() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        
         {/* HEADER SECTION (NAVY) */}
         <View style={styles.headerNavy}>
           <View style={styles.profileInfoRow}>
-            <Image 
-              source={require('../../assets/images/Faizcul.jpeg')} 
-              style={styles.profileImage} 
+            <Image
+              source={require("../../assets/images/CW.jpg")}
+              style={styles.profileImage}
             />
             <View style={styles.nameContainer}>
               <Text style={styles.userName}>Gloria Mairani</Text>
@@ -42,7 +36,6 @@ export default function Profile() {
 
         {/* CONTENT SECTION */}
         <View style={styles.contentBody}>
-          
           {/* STATISTIK SECTION */}
           <Text style={styles.sectionTitle}>Statistik</Text>
           <View style={styles.statsGrid}>
@@ -71,9 +64,9 @@ export default function Profile() {
             {/* XP */}
             <View style={styles.statsItem}>
               <View style={styles.iconCircle}>
-                 <Image 
-                  source={require('../../assets/images/xp.png')} 
-                  style={{ width: 22, height: 22 }} 
+                <Image
+                  source={require("../../assets/images/xp.png")}
+                  style={{ width: 22, height: 22 }}
                 />
               </View>
               <View>
@@ -130,7 +123,6 @@ export default function Profile() {
             <Text style={styles.versionText}>Version 1.1</Text>
             <Text style={styles.footerHashtag}>#TogetherWeShapeTheFuture</Text>
           </View>
-
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -140,20 +132,19 @@ export default function Profile() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: "white",
   },
   headerNavy: {
-    backgroundColor: '#041E42',
+    backgroundColor: "#041E42",
     height: 200, // Tinggi dikurangi agar lebih rapat
     borderBottomLeftRadius: 60,
     borderBottomRightRadius: 60,
-    justifyContent: 'center',
+    justifyContent: "center",
     paddingHorizontal: 25,
-    
   },
   profileInfoRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 10,
   },
   profileImage: {
@@ -161,24 +152,24 @@ const styles = StyleSheet.create({
     height: 70,
     borderRadius: 35,
     borderWidth: 2,
-    borderColor: '#FFB129',
+    borderColor: "#FFB129",
   },
   nameContainer: {
     flex: 1,
     marginLeft: 15,
   },
   userName: {
-    color: 'white',
+    color: "white",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   userSubName: {
-    color: 'white',
+    color: "white",
     fontSize: 15,
     opacity: 0.9,
   },
   ubahText: {
-    color: 'white',
+    color: "white",
     fontSize: 13,
     opacity: 0.7,
   },
@@ -188,77 +179,77 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#B51B1B',
+    fontWeight: "bold",
+    color: "#B51B1B",
     marginBottom: 10, // Jarak judul ke isi dikurangi
   },
   statsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
     marginBottom: 15, // Jarak antar section dikurangi
   },
   statsItem: {
-    width: '48%',
-    flexDirection: 'row',
-    alignItems: 'center',
+    width: "48%",
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 15, // Jarak antar item statistik dikurangi
   },
   iconCircle: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#B51B1B',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#B51B1B",
+    justifyContent: "center",
+    alignItems: "center",
     marginRight: 10,
   },
   statsValue: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
   },
   statsLabel: {
     fontSize: 13,
-    color: '#888',
+    color: "#888",
   },
   menuItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingVertical: 10, // Jarak antar menu dirapatkan
   },
   menuText: {
     fontSize: 15,
-    color: '#333',
-    fontWeight: '500',
+    color: "#333",
+    fontWeight: "500",
   },
   logoutButton: {
-    backgroundColor: '#6D96D2',
+    backgroundColor: "#6D96D2",
     height: 50, // Tinggi tombol dikurangi
     borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginTop: 20,
     marginBottom: 15,
   },
   logoutText: {
-    color: 'white',
+    color: "white",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   footerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     paddingBottom: 20,
-    marginBottom: 90, 
+    marginBottom: 90,
   },
   versionText: {
     fontSize: 11,
-    color: '#999',
+    color: "#999",
   },
   footerHashtag: {
     fontSize: 11,
-    color: '#999',
+    color: "#999",
   },
 });
